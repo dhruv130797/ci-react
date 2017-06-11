@@ -20,7 +20,7 @@ export const logPageView = () => {
 
 export default class extends React.Component {
   state = {
-    activeTab: 'all'
+    activeTab: 'all' , data:[]
   }
   static async getInitialProps () {
     const apiUrl = 'https://wp.catechetics.com/wp-json/wp/v2/';
@@ -30,10 +30,39 @@ export default class extends React.Component {
     return { data }
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
+    this.setState({data:﻿ this.props.data});
     initTabs();
     initGA()
     logPageView()
+  }
+
+  get(url) {
+  return fetch(url, {
+    method: 'get'
+    });
+  }
+
+  getJSON = (url) => {
+    return this.get(url).then(function(response) {
+      return response.json();
+    });
+  }
+
+  getSearchResults = () => {
+    /* Get input value
+        Make api call based on value
+        Render cards from api data
+     */
+     const searchTerm = document.getElementById('search').value;
+     console.log(searchTerm);
+
+     const apiUrl = 'https://wp.catechetics.com/wp-json/wp/v2/';
+     const params = `resource?search=${searchTerm}&per_page=100&fields=title,acf`;
+
+     this.getJSON(apiUrl + params)
+     .then(data =>﻿ this.setState({data}))
+
   }
 
   render () {
@@ -46,7 +75,7 @@ export default class extends React.Component {
      };
     const massonryComp = (
       <Masonry>
-        {this.props.data.filter(post => activeTab === 'all' || activeTab === post.acf.type).map( (post, i) => (
+        {this.state.data.filter(post => activeTab === 'all' || activeTab === post.acf.type).map( (post, i) => (
           <div className="col s12 m6 l4 xl3" key={i}>
             <ResourceCard title={post.title.rendered} type={post.acf.type} content={post.acf.description} url={post.acf.url} price={post.acf.price} />
           </div>
@@ -109,8 +138,18 @@ export default class extends React.Component {
               </div>
             </div>
           </div>
-          <div className="section valign-wrapper white-background-flourish">
-            <div className="valign container container-wide">
+          <div className="section white-background-flourish" style={{minHeight: '500px'}}>
+            <div className="container container-wide">
+              <div className="row">
+                <div className="input-field col s12 m6 offset-m6">
+                  <input id="search" type="text" onKeyUp={this.getSearchResults} />
+                  <label htmlFor="search">Search</label>
+                    <svg fill="rgba(0, 0, 0, 0.57)" height="24" viewBox="0 0 24 24" width="24">
+      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+      <path d="M0 0h24v24H0z" fill="none"/>
+  </svg>
+                </div>
+              </div>
               <div className="row">
                 <div className="col s12">
                   <ul className="tabs">
@@ -150,6 +189,16 @@ export default class extends React.Component {
               .tab a {
                 font-size: 18px;
               }
+            }
+
+            .input-field svg {
+              position: absolute;
+              right: 16px;
+              top: 15px;
+              width: 30px;
+              height: auto;
+            }
+
                 `}
           </style>
         </main>
