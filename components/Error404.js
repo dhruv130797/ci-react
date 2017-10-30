@@ -11,7 +11,7 @@ class Error404 extends Component {
         <div className="container">
           <div className="section">
             <div className="row">
-              <h4>No content exists at this address. Please try another page.</h4>
+              <h4>This is wrong</h4>
             </div>
           </div>
         </div>
