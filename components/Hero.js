@@ -29,7 +29,7 @@ class Hero extends Component {
                 background-image: url("/static/img/monstrance-2000w-op.jpg");
                 background-position-y: 26%; } }
 
-            @media screen and (max-width: 828px), screen and (max-height: 650px) {
+            @media screen and (max-width: 828px), screen and (max-height: 760px) {
               #hero {
                 display: none; } }
 
